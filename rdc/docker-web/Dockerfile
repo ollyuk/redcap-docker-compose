@@ -5,13 +5,17 @@ FROM php:8.3-apache-bookworm
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+# Install ca-certificates and gnupg to handle GPG keys properly
+RUN apt-get update -qq --allow-unauthenticated && \
+    apt-get -yq --no-install-recommends --allow-unauthenticated install ca-certificates gnupg && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Update GPG keys for Debian repositories
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6ED0E7B82643E131 78DBA3BC47EF2265 F8D2585B8783D481 54404762BBB6E853 BDE6D2B9216EC7A8 || true
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 6ED0E7B82643E131 78DBA3BC47EF2265 F8D2585B8783D481 54404762BBB6E853 BDE6D2B9216EC7A8 || true
 
 RUN apt-get update -qq && \
     apt-get -yq --no-install-recommends install \
     msmtp-mta \
-    ca-certificates \
     git \
     vim \
     ssh \
