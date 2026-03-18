@@ -1,25 +1,13 @@
 #FROM php:8.2-apache-buster
-FROM php:8.3-apache-bookworm
+FROM php:8.3-apache-bookworm-slim
 
 ## https://hub.docker.com/_/php/tags?page=1&name=apache
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+# Updated to use bookworm-slim for better GPG key management and smaller image size
 RUN apt-get update -qq && \
-    apt-get -yq --no-install-recommends install \
-    msmtp-mta \
-    ca-certificates \
-    git \
-    vim \
-    ssh \
-    wget \
-    libpng-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    p7zip-full \
-    ghostscript \
-    libmagickwand-dev
+    apt-get -yq --no-install-recommends install \n    msmtp-mta \n    ca-certificates \n    git \n    vim \n    ssh \n    wget \n    libpng-dev \n    libzip-dev \n    zip \n    unzip \n    p7zip-full \n    ghostscript \n    libmagickwand-dev
 
 # INSTALL IMAGICK
 # RUN pecl install imagick-3.7.0
@@ -30,7 +18,7 @@ RUN curl -fsSL https://github.com/Imagick/imagick/archive/944b67fce68bcb5835999a
     && docker-php-ext-enable imagick
 
     # Update ImageMagick policy
-RUN sed -i 's/policy\ domain=\"coder\" rights=\"none\" pattern=\"PDF\"/policy domain=\"coder\" rights=\"read\" pattern=\"PDF\"/g' /etc/ImageMagick-6/policy.xml
+RUN sed -i 's/policy\ domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
 
 # INSTALL MYSQLI AND OTHER DOCKER FUN (added freetype support for Gunther's nedcaptcha)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
